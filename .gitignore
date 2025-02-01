@@ -41,26 +41,22 @@ docker-compose.override.yml
 .VolumeIcon.icns
 .com.apple.timemachine.donotpresent
 
-# Backup folders
-Old Files/
-**/backup/
-**/old/
-
-# Claude Desktop specific logs
+# MCP specific
 mcp-server-*.log
 mcp.log
 *debug*.log
+.npm/_logs/
+your-puppeteer-script.js
+mcp-server.js
 
-# Debug logs
+# Debug & Error logs
 logs/
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Optional: Project specific
+# Project specific
+Old Files/
 crontabs/
 data/
-
-# npm error logs
-.npm/_logs/
