@@ -1,0 +1,27 @@
+{
+  "name": "docker-build-root",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "services/*"
+  ],
+  "scripts": {
+    "start": "node server.js",
+    "test": "mocha --require esm 'build/services/**/*.test.js'",
+    "mcp-server": "your_actual_command_here"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "formidable": "^3.5.2",
+    "fs-extra": "^11.2.0",
+    "jsonwebtoken": "^9.0.0",
+    "puppeteer": "^22.8.2",
+    "winston": "^3.11.0"
+  },
+  "devDependencies": {
+    "node-fetch": "^3.3.2",
+    "esm": "^3.2.25",
+    "mocha": "^11.1.0"
+  }
+}

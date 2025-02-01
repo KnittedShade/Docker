@@ -1,0 +1,67 @@
+services:
+  coordinator:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: coordinator
+    volumes:
+      - .:/usr/src/app
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - NODE_ENV=development
+      - PORT=3001
+    ports:
+      - "3001:3001"
+    networks:
+      - claude_network
+    tty: true
+    command: ["node", "--inspect=0.0.0.0:9229", "build/services/coordinator/server.js"]
+
+  filesystem:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: filesystem
+    volumes:
+      - .:/usr/src/app
+      - "/Users/jcook07/Library/Application Support/Claude:/config:ro"
+    environment:
+      - CONFIG_FILE=/config/claude_desktop_config.json
+      - NODE_ENV=development
+      - PORT=3000
+      - COORDINATOR_URL=ws://coordinator:3001
+    ports:
+      - "3000:3000"
+    networks:
+      - claude_network
+    tty: true
+    depends_on:
+      - coordinator
+    command: ["node", "--inspect=0.0.0.0:9231", "build/services/filesystem/server.js"]
+     
+  search:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: search
+    volumes:
+      - .:/usr/src/app
+      - "/Users/jcook07/Library/Application Support/Claude:/config:ro"
+    environment:
+      - NODE_ENV=development
+      - CONFIG_FILE=/config/claude_desktop_config.json
+      - PORT=3002
+      - COORDINATOR_URL=ws://coordinator:3001
+    ports:
+      - "3002:3002"
+    networks:
+      - claude_network
+    tty: true
+    depends_on:
+      - coordinator
+      - filesystem
+    command: ["node", "--inspect=0.0.0.0:9231", "build/services/search/server.cjs"]
+
+networks:
+  claude_network:
+    driver: bridge

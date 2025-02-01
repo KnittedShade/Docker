@@ -1,36 +1,24 @@
 {
-  "name": "welcome-to-docker",
-  "version": "0.1.0",
-  "private": true,
-  "dependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-particles": "^2.9.3",
-    "react-scripts": "5.0.1",
-    "tsparticles": "^2.9.3"
-  },
+  "workspaces": [
+    "services/*"
+  ],
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "start": "node server.js",
+    "test": "mocha --require esm 'build/services/**/*.test.js'"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
+  "dependencies": {
+    "express": "^4.18.2",
+    "puppeteer": "^22.8.2",
+    "jsonwebtoken": "^9.0.0",
+    "fs-extra": "^10.0.0",
+    "node-fetch": "^3.3.2",
+    "winston": "^3.3.3",
+    "chai": "^5.1.2",
+    "formidable": "^3.5.2"
   },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+  "devDependencies": {
+    "@babel/core": "^7.26.7",
+    "mocha": "^11.1.0",
+    "esm": "^3.2.25"
   }
 }

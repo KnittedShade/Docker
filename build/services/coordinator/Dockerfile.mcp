@@ -1,0 +1,61 @@
+FROM node:20-alpine
+
+# Install dependencies
+RUN apk add --no-cache \
+    chromium \
+    nss \
+    freetype \
+    harfbuzz \
+    ca-certificates \
+    ttf-freefont \
+    libstdc++ \
+    libgcc \
+    libx11 \
+    libxcb \
+    libxext \
+    libxcomposite \
+    libxcursor \
+    libxdamage \
+    libxi \
+    libxtst \
+    cups-libs \
+    dbus-libs \
+    mesa-gl \
+    xvfb
+
+# Create node user first
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+
+# Set the working directory
+WORKDIR /app
+
+# Create necessary directories with correct permissions first
+RUN mkdir -p /app/data/logs /app/data/Downloads && \
+    chown -R appuser:appgroup /app && \
+    chmod -R 755 /app
+
+# Copy package files
+COPY --chown=appuser:appgroup package*.json ./
+
+# Install dependencies
+RUN npm ci --only=production && \
+    npm cache clean --force
+
+# Copy application files with correct ownership
+COPY --chown=appuser:appgroup . .
+
+# Set Puppeteer configurations
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
+    PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser \
+    DISPLAY=:99
+
+# Switch to non-root user
+USER appuser
+
+EXPOSE 3004
+
+# Add executable permission to entrypoint
+RUN chmod +x /app/entrypoint.sh
+
+ENTRYPOINT ["/app/entrypoint.sh"]
+CMD ["node", "app.js"]

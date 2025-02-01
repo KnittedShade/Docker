@@ -1,0 +1,38 @@
+FROM node:20-slim
+
+# Install dependencies
+RUN apt-get update && apt-get install -y \
+    chromium \
+    xvfb \
+    libnss3 \
+    libatk-bridge2.0-0 \
+    libgtk-3-0 \
+    libgbm-dev \
+    libx11-xcb1 \
+    libasound2 \
+    --no-install-recommends \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set working directory
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+
+# Install dependencies
+RUN npm install --omit=dev
+
+# List installed packages
+RUN npm list
+
+# Output contents of node_modules
+RUN ls -la node_modules
+
+# Copy application files
+COPY . .
+
+# Expose port
+EXPOSE 3003
+
+# Start the application
+CMD ["sh", "-c", "Xvfb :99 -screen 0 1024x768x24 -ac +extension GLX +render -noreset & export DISPLAY=:99 && node scholarScraper.js"]
